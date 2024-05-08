@@ -1,11 +1,12 @@
 package org.example.isilerp.dao;
 
+
+import org.example.isilerp.model.Usuario;
+
 //importar dependencias para la conexion SQL
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioDAO {
     //para conectarnos a base de datos requerimos 2 cosas importantes
@@ -56,6 +57,34 @@ public class UsuarioDAO {
         this.conexion.close();
         return existe;
 
+    }
+
+    //metodo para obtener un usuario segun su correo. Necesito el MODELO de usuario
+    //usando preparedStatement para ejemplificar como se usa
+    //personalmente prefiero String.format - Huarez Reyes
+    public List<Usuario> buscarUsuariosxCorreo(String correo) throws SQLException {
+
+        //Lista donde se devolveran los usuarios encontrados
+        List<Usuario> listaUsuarios = new ArrayList<Usuario>();
+
+        String sentenciaSQL = "SELECT * FROM Usuario WHERE correo = ?";
+        PreparedStatement stmt = this.conexion.prepareStatement(sentenciaSQL);
+        stmt.setString(1, correo);
+        ResultSet rs = stmt.executeQuery();
+
+        //lee una fila de lo que traido
+        while (rs.next()) {
+            Usuario objUsuario = new Usuario();
+            objUsuario.setId(rs.getInt(1));
+            objUsuario.setCorreo(rs.getString(2));
+            objUsuario.setPassword(rs.getString(3));
+            objUsuario.setEstado(rs.getString(4));
+
+            listaUsuarios.add(objUsuario);
+        }
+
+        this.conexion.close();
+        return listaUsuarios;
     }
 
 }
