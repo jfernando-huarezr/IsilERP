@@ -16,7 +16,7 @@
   <br>
   <br>
   <form action="usuario" method="GET">
-    <input type="hidden" name="opcionGet" value="buscarUsuario"/>
+    <input type="hidden" name="opcionGET" value="buscarUsuario"/>
     Correo: <input type="text" name="correo"/><button>Buscar</button>
   </form>
 

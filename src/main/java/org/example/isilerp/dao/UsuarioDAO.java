@@ -67,9 +67,9 @@ public class UsuarioDAO {
         //Lista donde se devolveran los usuarios encontrados
         List<Usuario> listaUsuarios = new ArrayList<Usuario>();
 
-        String sentenciaSQL = "SELECT * FROM Usuario WHERE correo = ?";
+        String sentenciaSQL = "SELECT * FROM Usuario WHERE correo like ?";
         PreparedStatement stmt = this.conexion.prepareStatement(sentenciaSQL);
-        stmt.setString(1, correo);
+        stmt.setString(1, "%"+correo+"%");
         ResultSet rs = stmt.executeQuery();
 
         //lee una fila de lo que traido
