@@ -33,13 +33,17 @@
       <tr>
         <td>${usuario.id}</td>
         <td>${usuario.correo}</td>
-        <td>${usuario.password}</td>
         <td>${usuario.estado}</td>
+        <td>Editar Eliminar</td>
       </tr>
     </c:forEach>
   </table>
   <br>
   <br>
-  <button>Nuevo</button>
+  <form action="usuario" method="POST">
+    <input type="hidden" value="mostrarNuevoUsuario" name="opcionPOST"/>
+    <button>Nuevo</button>
+  </form>
+
 </body>
 </html>

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/login")
+@WebServlet(name = "LoginController", value="/login")
 public class LoginController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

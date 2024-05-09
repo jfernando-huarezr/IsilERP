@@ -87,4 +87,16 @@ public class UsuarioDAO {
         return listaUsuarios;
     }
 
+    public void grabarUsusario(String correo, String password, String estado) throws SQLException {
+        String sentenciaSQL = "INSERT INTO Usuario (correo, password, estado) VALUES (?, ?, ?)";
+        PreparedStatement stmt = this.conexion.prepareStatement(sentenciaSQL);
+        stmt.setString(1, correo);
+        stmt.setString(2, password);
+        stmt.setString(3, estado);
+
+        //solo para los select es executeQuery, para el resto es execute
+        stmt.execute();
+
+    }
+
 }

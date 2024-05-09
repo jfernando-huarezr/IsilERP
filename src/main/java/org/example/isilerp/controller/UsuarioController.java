@@ -46,6 +46,44 @@ public class UsuarioController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String opcion = request.getParameter("opcionPOST");
+        switch (opcion) {
+            case "mostrarNuevoUsuario": {
+                mostrarNuevoUsuario(request, response);
+                break;
+            }
 
+            case "grabarUsuario": {
+                try {
+                    grabarUsuario(request,response);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            }
+        }
+    }
+
+    private void grabarUsuario(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        String correo = request.getParameter("correo");
+        String password = request.getParameter("password");
+        String estado = request.getParameter("estado");
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        usuarioDAO.grabarUsusario(correo, password, estado);
+
+        String paginaDestino = "/gestionUsuarios.jsp";
+        //redirigir sistema a pagina en particular
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(paginaDestino);
+        dispatcher.forward(request, response);
+    }
+
+    private void mostrarNuevoUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        //definir pagina donde debemos ir
+        String paginaDestino = "/nuevoUsuario.jsp";
+        //redirigir sistema a pagina en particular
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(paginaDestino);
+        dispatcher.forward(request, response);
     }
 }
