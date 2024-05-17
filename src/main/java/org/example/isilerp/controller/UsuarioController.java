@@ -18,6 +18,14 @@ public class UsuarioController extends HttpServlet {
         String opcion = request.getParameter("opcionGET");
 
         switch (opcion) {
+            case "mostrarEditarUsuario" : {
+                try {
+                    mostrarEditarUsuario(request, response);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            }
             case "buscarUsuario": {
                 try {
                     buscarUsuario(request, response);
@@ -26,22 +34,14 @@ public class UsuarioController extends HttpServlet {
                 }
                 break;
             }
+            case "eliminarUsuario": {
+                try {
+                    eliminarUsuario(request, response);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } break;
         }
-    }
-
-    private void buscarUsuario(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
-        String correo = request.getParameter("correo");
-        UsuarioDAO objUsuarioDAO = new UsuarioDAO();
-        List<Usuario> listaUsuarios = objUsuarioDAO.buscarUsuariosxCorreo(correo);
-
-        //dejar la informacion en memoria
-        request.setAttribute("listaUsuarios", listaUsuarios);
-
-        //definir pagina donde debemos ir
-        String paginaDestino = "/gestionUsuarios.jsp";
-        //redirigir sistema a pagina en particular
-        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(paginaDestino);
-        dispatcher.forward(request, response);
     }
 
     @Override
@@ -52,6 +52,14 @@ public class UsuarioController extends HttpServlet {
                 mostrarNuevoUsuario(request, response);
                 break;
             }
+
+            case "editarUsuario": {
+                try {
+                    editarUsuario(request, response);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } break;
 
             case "grabarUsuario": {
                 try {
@@ -70,7 +78,7 @@ public class UsuarioController extends HttpServlet {
         String estado = request.getParameter("estado");
 
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        usuarioDAO.grabarUsusario(correo, password, estado);
+        usuarioDAO.grabarUsuario(correo, password, estado);
 
         String paginaDestino = "/gestionUsuarios.jsp";
         //redirigir sistema a pagina en particular
@@ -82,6 +90,61 @@ public class UsuarioController extends HttpServlet {
 
         //definir pagina donde debemos ir
         String paginaDestino = "/nuevoUsuario.jsp";
+        //redirigir sistema a pagina en particular
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(paginaDestino);
+        dispatcher.forward(request, response);
+    }
+
+    private void mostrarEditarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+        int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+
+        UsuarioDAO objusuarioDAO = new UsuarioDAO();
+        Usuario usuario = objusuarioDAO.buscarUsuarioxId(idUsuario);
+
+        request.setAttribute("usuario", usuario);
+
+        String paginaDestino = "/editarUsuario.jsp";
+        RequestDispatcher dispatcher = request.getRequestDispatcher(paginaDestino);
+        dispatcher.forward(request,response);
+    }
+
+    private void editarUsuario(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
+        String correo = request.getParameter("correo");
+        String password = request.getParameter("password");
+        String estado = request.getParameter("estado");
+        int id = Integer.parseInt(request.getParameter("id"));
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        usuarioDAO.editarUsuario(correo, password, estado, id);
+
+        String paginaDestino = "/gestionUsuarios.jsp";
+        //redirigir sistema a pagina en particular
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(paginaDestino);
+        dispatcher.forward(request, response);
+    }
+
+    private void eliminarUsuario(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
+        int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+        UsuarioDAO objUsuarioDAO = new UsuarioDAO();
+        objUsuarioDAO.eliminarUsuario(idUsuario);
+
+        //definir pagina donde debemos ir
+        String paginaDestino = "/gestionUsuarios.jsp";
+        //redirigir sistema a pagina en particular
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(paginaDestino);
+        dispatcher.forward(request, response);
+    }
+
+    private void buscarUsuario(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        String correo = request.getParameter("correo");
+        UsuarioDAO objUsuarioDAO = new UsuarioDAO();
+        List<Usuario> listaUsuarios = objUsuarioDAO.buscarUsuariosxCorreo(correo);
+
+        //dejar la informacion en memoria
+        request.setAttribute("listaUsuarios", listaUsuarios);
+
+        //definir pagina donde debemos ir
+        String paginaDestino = "/gestionUsuarios.jsp";
         //redirigir sistema a pagina en particular
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(paginaDestino);
         dispatcher.forward(request, response);

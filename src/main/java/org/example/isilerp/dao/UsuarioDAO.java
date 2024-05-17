@@ -1,26 +1,31 @@
 package org.example.isilerp.dao;
 
 
+
+import org.example.isilerp.config.DatabaseConfigLoader;
 import org.example.isilerp.model.Usuario;
 
 //importar dependencias para la conexion SQL
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 public class UsuarioDAO {
     //para conectarnos a base de datos requerimos 2 cosas importantes
     //1. La ruta/ubicacion donde se encuentra nuestra base de datos.
     //2. La conexion a nuestra base de datos.
 
-    private String url;
     private Connection conexion;
 
     //metodo constructor donde se establece la conexion
-    public UsuarioDAO() throws SQLException {
+    public UsuarioDAO() throws SQLException, IOException {
+        DatabaseConfigLoader dbconfig = new DatabaseConfigLoader();
         /*definir todo lo necesario para conectarse a la base de datos*/
         //1. la ruta donde va a estar mi base de datos -> jdbc:sqlserver://ubicacionBD:puertoBD;nombreBD;usuarioBD;passwordBD
-        this.url = "jdbc:sqlserver://localhost:1433;databaseName=IsilERP;user=sa;password=Crisantemos-421";
+        String url = String.format("%s;databaseName=%s;user=%s;password=%s", dbconfig.getURL(), dbconfig.getName(), dbconfig.getUser(), dbconfig.getPassword());
 
         try {
             //cargar el driver del sqlServer
@@ -87,7 +92,25 @@ public class UsuarioDAO {
         return listaUsuarios;
     }
 
-    public void grabarUsusario(String correo, String password, String estado) throws SQLException {
+    public Usuario buscarUsuarioxId(int id) throws SQLException {
+        Usuario usuario = new Usuario();
+        String sentenciaSQL = "SELECT * FROM Usuario WHERE id = ?";
+        PreparedStatement stmt = this.conexion.prepareStatement(sentenciaSQL);
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            usuario.setId(rs.getInt(1));
+            usuario.setCorreo(rs.getString(2));
+            usuario.setPassword(rs.getString(3));
+            usuario.setEstado(rs.getString(4));
+        }
+
+        this.conexion.close();
+        return usuario;
+    }
+
+    public void grabarUsuario(String correo, String password, String estado) throws SQLException {
         String sentenciaSQL = "INSERT INTO Usuario (correo, password, estado) VALUES (?, ?, ?)";
         PreparedStatement stmt = this.conexion.prepareStatement(sentenciaSQL);
         stmt.setString(1, correo);
@@ -96,7 +119,26 @@ public class UsuarioDAO {
 
         //solo para los select es executeQuery, para el resto es execute
         stmt.execute();
+        this.conexion.close();
 
     }
 
+    public void eliminarUsuario(int id) throws SQLException {
+        String sentenciaSQL = "DELETE FROM Usuario WHERE id = ?";
+        PreparedStatement stmt = this.conexion.prepareStatement(sentenciaSQL);
+        stmt.setInt(1, id);
+        stmt.execute();
+        this.conexion.close();
+    }
+
+    public void editarUsuario(String correo, String password, String estado, int id) throws SQLException {
+        String sentenciaSQL = "UPDATE Usuario SET correo = ?, password = ?, estado = ? WHERE id = ?";
+        PreparedStatement stmt = this.conexion.prepareStatement(sentenciaSQL);
+        stmt.setString(1, correo);
+        stmt.setString(2, password);
+        stmt.setString(3, estado);
+        stmt.setInt(4, id);
+        stmt.execute();
+        this.conexion .close();
+    }
 }

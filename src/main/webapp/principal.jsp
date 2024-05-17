@@ -15,6 +15,6 @@
     <h1>Bienvenido al Sistema ISIL ERP</h1>
     <br>
 
-    <a href="home?opcionGet=mostrarGestionUsuarios">Gestion de Usuarios</a>
+    <a href="home?opcionGET=mostrarGestionUsuarios">Gestion de Usuarios</a>
 </body>
 </html>

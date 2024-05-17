@@ -34,7 +34,7 @@
         <td>${usuario.id}</td>
         <td>${usuario.correo}</td>
         <td>${usuario.estado}</td>
-        <td>Editar Eliminar</td>
+        <td><a href="usuario?opcionGET=mostrarEditarUsuario&idUsuario=${usuario.id}">Editar</a> <a href="usuario?opcionGET=eliminarUsuario&idUsuario=${usuario.id}"> Eliminar</a><td>
       </tr>
     </c:forEach>
   </table>
